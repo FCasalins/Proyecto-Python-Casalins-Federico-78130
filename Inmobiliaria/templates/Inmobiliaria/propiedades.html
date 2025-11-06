@@ -1,0 +1,37 @@
+{% extends "inmobiliaria/index.html" %}
+
+{% block titulo %} Propiedades | Inmobiliaria {% endblock %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Buscar Propiedades</h2>
+
+  <form method="get" class="border p-3 rounded bg-light">
+    {{ form.as_p }}
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+  </form>
+
+  <hr>
+
+  <div class="row mt-4">
+    {% for propiedad in propiedades %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          {% if propiedad.imagen_principal %}
+            <img src="{{ propiedad.imagen_principal.url }}" class="card-img-top" alt="{{ propiedad.tipo }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ propiedad.tipo|capfirst }} en {{ propiedad.localidad }}</h5>
+            <p class="card-text">{{ propiedad.descripcion|truncatewords:15 }}</p>
+            <p><strong>Precio:</strong> ${{ propiedad.precio|floatformat:0 }}</p>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center">No se encontraron propiedades con esos criterios.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
