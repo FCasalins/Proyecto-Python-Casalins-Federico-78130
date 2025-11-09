@@ -1,0 +1,28 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Editar perfil | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Editar mi perfil</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-principal">Guardar cambios</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'profile_detail' %}" class="text-decoration-none">Volver a mi perfil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

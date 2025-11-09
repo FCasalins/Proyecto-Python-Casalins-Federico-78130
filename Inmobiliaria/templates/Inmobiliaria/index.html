@@ -85,6 +85,18 @@
                     <li class="nav-item"><a class="nav-link" href="{% url "tasaciones" %}">Tasaciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url "nosotros" %}">Nosotros</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'profile_detail' %}">Perfil</a></li>
+                        <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-item nav-link">Cerrar sesion</button>
+                        </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Registrarse</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

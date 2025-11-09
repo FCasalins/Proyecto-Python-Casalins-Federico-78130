@@ -1,0 +1,28 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Registrarse | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4 class="mb-0">register</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-principal">Registrarse</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-decoration-none">Iniciar sesión</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Cierre de sesión | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5 text-center">
+    <div class="card mx-auto shadow" style="max-width: 500px;">
+        <div class="card-body">
+            <h4 class="mb-3 text-primary">Has cerrado sesión correctamente.</h4>
+            <p>Gracias por visitarnos.</p>
+            <a href="{% url 'login' %}" class="btn btn-principal mt-3">Volver a iniciar sesión</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
