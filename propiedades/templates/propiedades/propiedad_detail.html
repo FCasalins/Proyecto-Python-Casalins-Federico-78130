@@ -1,0 +1,39 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}{{ propiedad.tipo|capfirst }} en {{ propiedad.localidad }} | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+    <div class="card shadow">
+        {% if propiedad.imagen_principal %}
+        <img src="{{ propiedad.imagen_principal.url }}" class="card-img-top" alt="Imagen de propiedad">
+        {% endif %}
+        <div class="card-body">
+            <h3 class="card-title text-primary">{{ propiedad.tipo|capfirst }} en {{ propiedad.localidad }}</h3>
+            <p class="text-muted">{{ propiedad.operacion|capfirst }} — {{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}</p>
+            <p>{{ propiedad.descripcion }}</p>
+
+            <ul class="list-unstyled">
+                <li><strong>Código:</strong> {{ propiedad.codigo }}</li>
+                <li><strong>Ambientes:</strong> {{ propiedad.ambientes }}</li>
+                {% if propiedad.dormitorios %}<li><strong>Dormitorios:</strong> {{ propiedad.dormitorios }}</li>{% endif %}
+                {% if propiedad.banios %}<li><strong>Baños:</strong> {{ propiedad.banios }}</li>{% endif %}
+                {% if propiedad.superficie_total %}<li><strong>Superficie total:</strong> {{ propiedad.superficie_total }} m²</li>{% endif %}
+                {% if propiedad.superficie_cubierta %}<li><strong>Superficie cubierta:</strong> {{ propiedad.superficie_cubierta }} m²</li>{% endif %}
+                {% if propiedad.cochera %}<li><strong>Cochera:</strong> Sí</li>{% endif %}
+                <li><strong>Dirección:</strong> {{ propiedad.calle }} {% if propiedad.barrio %}({{ propiedad.barrio }}){% endif %}</li>
+            </ul>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'propiedad_list' %}" class="btn btn-outline-secondary">Volver</a>
+
+                {% if user.is_authenticated and user == propiedad.agente %}
+                <div>
+                    <a href="{% url 'propiedad_update' propiedad.pk %}" class="btn btn-outline-primary me-2">Editar</a>
+                    <a href="{% url 'propiedad_delete' propiedad.pk %}" class="btn btn-outline-danger">Eliminar</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,21 +4,47 @@
 {% block contenido %}
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white text-center">
                     <h4 class="mb-0">Editar mi perfil</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-grid mt-3">
+
+                        <div class="text-center mb-4">
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" class="rounded-circle shadow-sm" width="120" height="120" alt="Avatar actual">
+                            {% else %}
+                                <img src="/media/default/avatar.png" class="rounded-circle shadow-sm" width="120" height="120" alt="Avatar por defecto">
+                            {% endif %}
+                        </div>
+
+                        {% for field in form %}
+                            {% if field.name not in "password es_agente es_tasador es_cliente activo user_permissions groups" %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <div class="form-text">{{ field.help_text }}</div>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <div class="text-danger small">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-principal">Guardar cambios</button>
                         </div>
                     </form>
+
                     <div class="text-center mt-3">
-                        <a href="{% url 'profile_detail' %}" class="text-decoration-none">Volver a mi perfil</a>
+                        <a href="{% url 'profile_detail' %}" class="text-decoration-none text-secondary">
+                            ← Volver a mi perfil
+                        </a>
                     </div>
                 </div>
             </div>

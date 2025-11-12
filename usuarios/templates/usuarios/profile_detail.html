@@ -1,0 +1,79 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Mi perfil | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+    {% if messages %}
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-6">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center py-4">
+
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" class="rounded-circle mb-3 shadow-sm" width="130" height="130" alt="Avatar">
+                    {% else %}
+                        <img src="/media/default/avatar.png" class="rounded-circle mb-3 shadow-sm" width="130" height="130" alt="Avatar genérico">
+                    {% endif %}
+
+                    <h4 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p class="text-muted mb-1">@{{ user.username }}</p>
+
+                    <p class="fw-semibold text-primary mt-2">
+                        {% if user.es_agente %}
+                            Agente
+                        {% elif user.es_tasador %}
+                            Tasador
+                        {% elif user.es_cliente %}
+                            Cliente
+                        {% else %}
+                            Sin rol asignado
+                        {% endif %}
+                    </p>
+
+                    <hr class="my-3">
+                    <div class="text-start px-4">
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>País:</strong> {{ user.pais|default:"—" }}</p>
+                        <p><strong>Dirección:</strong> {{ user.direccion|default:"—" }}</p>
+                        <p><strong>Fecha de nacimiento:</strong> {{ user.fecha_de_nacimiento|date:"d/m/Y"|default:"—" }}</p>
+                        <p><strong>Estado:</strong>
+                            {% if user.activo %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactivo</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary btn-sm me-2">
+                            <i class="bi bi-pencil-square"></i> Editar perfil
+                        </a>
+                        <form method="post" action="{% url 'logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                            </button>
+                        </form>
+                        <a href="{% url 'profile_delete' %}" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i> Eliminar cuenta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

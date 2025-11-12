@@ -1,0 +1,120 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Propiedades | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-primary">Propiedades disponibles</h2>
+
+        {% if user.is_authenticated and user.es_agente %}
+            <a href="{% url 'propiedad_create' %}" class="btn btn-primary shadow-sm">
+                <i class="bi bi-plus-lg"></i> Nueva propiedad
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body">
+            <h5 class="mb-4 text-secondary">Buscar propiedades</h5>
+            <form method="get" class="row g-3">
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Código</label>
+                    {{ form.codigo }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Calle</label>
+                    {{ form.calle }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Operación</label>
+                    {{ form.operacion }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Tipo</label>
+                    {{ form.tipo }}
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Localidad</label>
+                    {{ form.localidad }}
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Barrio</label>
+                    {{ form.barrio }}
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label fw-semibold">Ambientes</label>
+                    {{ form.ambientes }}
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Precio mínimo</label>
+                    {{ form.precio_min }}
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Precio máximo</label>
+                    {{ form.precio_max }}
+                </div>
+
+                <div class="col-md-12 text-end mt-3">
+                    <button type="submit" class="btn btn-outline-primary px-4">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    {% if propiedades %}
+        <div class="row g-4">
+            {% for propiedad in propiedades %}
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        {% if propiedad.imagen_principal %}
+                            <img src="{{ propiedad.imagen_principal.url }}" class="card-img-top" alt="{{ propiedad }}">
+                        {% else %}
+                            <img src="/media/default/propiedad_default.jpg" class="card-img-top" alt="Sin imagen disponible">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-1">{{ propiedad.tipo|capfirst }} en {{ propiedad.localidad }}</h5>
+                            <p class="text-muted mb-2">{{ propiedad.get_operacion_display }} — {{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}</p>
+                            <p class="small text-truncate text-secondary mb-3">{{ propiedad.descripcion }}</p>
+
+                            <div class="mt-auto">
+                                <a href="{% url 'propiedad_detail' propiedad.pk %}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                                    <i class="bi bi-eye"></i> Ver detalles
+                                </a>
+
+                                {% if user.is_authenticated and user.es_agente and user == propiedad.agente %}
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'propiedad_update' propiedad.pk %}" class="btn btn-outline-secondary btn-sm w-100">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </a>
+                                        <a href="{% url 'propiedad_delete' propiedad.pk %}" class="btn btn-outline-danger btn-sm w-100">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center mt-4 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> No se encontraron propiedades con los filtros seleccionados.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

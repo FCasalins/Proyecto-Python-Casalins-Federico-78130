@@ -1,0 +1,45 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Nueva Propiedad | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">Crear nueva propiedad</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for err in form.non_field_errors %}{{ err }}<br>{% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row g-3">
+                    {% for field in form %}
+                        <div class="col-md-6">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text small">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="text-danger small">
+                                    {% for e in field.errors %}{{ e }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="{% url 'propiedad_list' %}" class="btn btn-outline-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-principal">Crear propiedad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

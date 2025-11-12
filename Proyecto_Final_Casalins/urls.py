@@ -24,8 +24,7 @@ urlpatterns = [
     path("", include("Inmobiliaria.urls")),
     path("propiedades/", include("propiedades.urls")),
     path("tasaciones/", include("tasaciones.urls")),
-    path("usuarios/", include("usuarios.urls")),
-    path("",include("usuarios.urls")), 
+    path("", include("usuarios.urls")),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,21 @@
+{% extends "inmobiliaria/index.html" %}
+{% block titulo %}Eliminar Propiedad | Inmobiliaria{% endblock %}
+
+{% block contenido %}
+<div class="container py-5 text-center">
+    <div class="card mx-auto shadow" style="max-width: 600px;">
+        <div class="card-body">
+            <h4 class="text-danger mb-3">Confirmar eliminación</h4>
+            <p>¿Seguro que deseas eliminar la propiedad <strong>{{ propiedad }}</strong>? Esta acción no se puede deshacer.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center mt-4">
+                    <a href="{% url 'propiedad_detail' propiedad.pk %}" class="btn btn-outline-secondary me-3">Cancelar</a>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
