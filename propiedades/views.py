@@ -2,9 +2,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
-
-from propiedades.models import Propiedad
-from propiedades.forms import PropiedadForm
+from django.shortcuts import render, redirect, get_object_or_404
+from propiedades.models import Propiedad, ImagenPropiedad
+from propiedades.forms import PropiedadForm, ImagenPropiedadForm
+from django.contrib.auth.decorators import login_required
 
 
 class PropiedadListView(ListView):
@@ -16,37 +17,27 @@ class PropiedadListView(ListView):
         queryset = Propiedad.objects.filter(activo=True)
         form = PropiedadForm(self.request.GET or None)
 
-        # Si el usuario hizo una búsqueda (hay parámetros GET)
-        if self.request.GET and form.is_valid():
-            operacion = form.cleaned_data.get("operacion")
-            tipo = form.cleaned_data.get("tipo")
-            localidad = form.cleaned_data.get("localidad")
-            barrio = form.cleaned_data.get("barrio")
-            calle = form.cleaned_data.get("calle")
-            codigo = form.cleaned_data.get("codigo")
-            ambientes = form.cleaned_data.get("ambientes")
-            precio_min = form.cleaned_data.get("precio_min")
-            precio_max = form.cleaned_data.get("precio_max")
+        if form.is_valid():
+            data = form.cleaned_data
 
-            # Aplicamos filtros solo si hay valores cargados
-            if operacion:
-                queryset = queryset.filter(operacion=operacion)
-            if tipo:
-                queryset = queryset.filter(tipo=tipo)
-            if localidad:
-                queryset = queryset.filter(localidad__icontains=localidad)
-            if barrio:
-                queryset = queryset.filter(barrio__icontains=barrio)
-            if calle:
-                queryset = queryset.filter(calle__icontains=calle)
-            if codigo:
-                queryset = queryset.filter(codigo=codigo)
-            if ambientes:
-                queryset = queryset.filter(ambientes=ambientes)
-            if precio_min:
-                queryset = queryset.filter(precio__gte=precio_min)
-            if precio_max:
-                queryset = queryset.filter(precio__lte=precio_max)
+            if data.get("operacion"):
+                queryset = queryset.filter(operacion=data["operacion"])
+            if data.get("tipo"):
+                queryset = queryset.filter(tipo=data["tipo"])
+            if data.get("localidad"):
+                queryset = queryset.filter(localidad__icontains=data["localidad"])
+            if data.get("barrio"):
+                queryset = queryset.filter(barrio__icontains=data["barrio"])
+            if data.get("calle"):
+                queryset = queryset.filter(calle__icontains=data["calle"])
+            if data.get("codigo") not in (None, ""):
+                queryset = queryset.filter(codigo=data["codigo"])
+            if data.get("ambientes"):
+                queryset = queryset.filter(ambientes=data["ambientes"])
+            if data.get("precio_min") is not None:
+                queryset = queryset.filter(precio__gte=data["precio_min"])
+            if data.get("precio_max") is not None:
+                queryset = queryset.filter(precio__lte=data["precio_max"])
 
         return queryset
 
@@ -76,7 +67,7 @@ class SoloAgenteMixin(LoginRequiredMixin, UserPassesTestMixin):
 class PropiedadCreateView(SoloAgenteMixin, CreateView):
     model = Propiedad
     fields = [
-        "codigo", "operacion", "tipo", "descripcion", "localidad", "barrio",
+        "operacion", "tipo", "descripcion", "localidad", "barrio",
         "calle", "superficie_total", "superficie_cubierta", "ambientes",
         "dormitorios", "banios", "cochera", "precio", "moneda",
         "estado", "imagen_principal", "activo"
@@ -123,3 +114,35 @@ class PropiedadDeleteView(SoloAgenteMixin, DeleteView):
     def test_func(self):
         propiedad = self.get_object()
         return self.request.user.is_superuser or self.request.user == propiedad.agente
+    
+@login_required
+def agregar_imagenes(request, pk):
+    propiedad = get_object_or_404(Propiedad, pk=pk)
+
+    # Solo el agente dueño puede agregar imágenes
+    if not request.user.es_agente or request.user != propiedad.agente:
+        return redirect("propiedad_detail", pk=pk)
+
+    if request.method == "POST":
+        form = ImagenPropiedadForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            imagenes = request.FILES.getlist("imagen")
+            descripcion = form.cleaned_data.get("descripcion", "")
+
+            for img in imagenes:
+                ImagenPropiedad.objects.create(
+                    propiedad=propiedad,
+                    imagen=img,
+                    descripcion=descripcion
+                )
+
+            return redirect("propiedad_detail", pk=pk)
+
+    else:
+        form = ImagenPropiedadForm()
+
+    return render(request, "propiedades/propiedad_agregar_imagenes.html", {
+        "form": form,
+        "propiedad": propiedad,
+    })

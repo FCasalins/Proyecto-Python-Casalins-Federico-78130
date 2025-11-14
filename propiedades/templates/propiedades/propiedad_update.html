@@ -34,6 +34,12 @@
                     {% endfor %}
                 </div>
 
+                {% if request.user.is_authenticated and request.user.es_agente and request.user == object.agente %}
+                    <a href="{% url 'propiedad_add_images' object.pk %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-images"></i> Agregar imágenes
+                    </a>
+                {% endif %}
+
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{% url 'propiedad_detail' object.pk %}" class="btn btn-outline-secondary">Volver</a>
                     <div>

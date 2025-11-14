@@ -1,5 +1,6 @@
 from django import forms
-from propiedades.models import Propiedad
+from propiedades.models import Propiedad, ImagenPropiedad
+from .widgets import MultiFileInput
 
 class PropiedadForm(forms.ModelForm):
     precio_min = forms.DecimalField(
@@ -49,3 +50,14 @@ class PropiedadForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.required = False
+
+class ImagenPropiedadForm(forms.ModelForm):
+    imagen = forms.ImageField(
+        widget=MultiFileInput(attrs={'multiple': True}),
+        required=True,
+        label="Imágenes"
+    )
+
+    class Meta:
+        model = ImagenPropiedad
+        fields = ["imagen", "descripcion"]

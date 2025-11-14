@@ -36,6 +36,12 @@
                             {% endif %}
                         {% endfor %}
 
+                        <div class="text-center mt-4">
+                            <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-key"></i> Cambiar contraseña
+                            </a>
+                        </div>
+
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-principal">Guardar cambios</button>
                         </div>

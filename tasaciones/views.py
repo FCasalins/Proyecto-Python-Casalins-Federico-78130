@@ -13,4 +13,4 @@ def tasaciones(request):
         form = TasacionForm()
 
     tasaciones = Tasacion.objects.all().order_by("-fecha_solicitud")
-    return render(request, "inmobiliaria/tasaciones.html", {"form": form, "tasaciones": tasaciones})
+    return render(request, "tasaciones/tasaciones.html", {"form": form, "tasaciones": tasaciones})

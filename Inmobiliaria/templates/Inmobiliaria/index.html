@@ -84,7 +84,6 @@
                     <li class="nav-item"><a class="nav-link" href="{% url "propiedad_list" %}">Propiedades</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url "tasaciones" %}">Tasaciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url "nosotros" %}">Nosotros</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'profile_detail' %}">Perfil</a></li>
                         <li class="nav-item">
@@ -108,7 +107,7 @@
         <div class="container">
             <h1>Encontrá la propiedad ideal</h1>
             <p>Casas, departamentos, lotes y más — te ayudamos a cumplir tus proyectos.</p>
-            <a href="#" class="btn btn-principal btn-lg mt-4">Ver Propiedades</a>
+            <a href="{% url 'propiedad_list' %}" class="btn btn-principal btn-lg mt-4">Ver Propiedades</a>
         </div>
     </section>
 
@@ -116,35 +115,26 @@
     <section class="container py-5">
         <h2 class="text-center mb-4 text-primary fw-bold">Propiedades destacadas</h2>
         <div class="row g-4">
+            {% for propiedad in propiedades_destacadas %}
             <div class="col-md-4">
                 <div class="card shadow-sm">
+                    {% if propiedad.imagen_principal %}
+                    <img src="{{ propiedad.imagen_principal.url }}" class="card-img-top" alt="Imagen de {{ propiedad.tipo }}">
+                    {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title">Casa en Chascomús</h5>
-                        <p class="card-text text-muted">3 ambientes · 120 m² · $120.000 USD</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">Ver más</a>
+                        <h5 class="card-title">{{ propiedad.tipo|capfirst }} en {{ propiedad.localidad }}</h5>
+                        <p class="card-text text-muted">
+                            {{ propiedad.ambientes }} ambientes ·
+                            {% if propiedad.superficie_total %}{{ propiedad.superficie_total }} m² ·{% endif %}
+                            {{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}
+                        </p>
+                        <a href="{% url 'propiedad_detail' propiedad.pk %}" class="btn btn-outline-primary btn-sm">Ver más</a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Departamento en La Plata</h5>
-                        <p class="card-text text-muted">2 ambientes · 80 m² · $95.000 USD</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">Ver más</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Lote en Lezama</h5>
-                        <p class="card-text text-muted">400 m² · $35.000 USD</p>
-                        <a href="#" class="btn btn-outline-primary btn-sm">Ver más</a>
-                    </div>
-                </div>
-            </div>
+            {% empty %}
+            <p class="text-center text-muted">No hay propiedades disponibles por el momento.</p>
+            {% endfor %}
         </div>
     </section>
     {% endblock %}

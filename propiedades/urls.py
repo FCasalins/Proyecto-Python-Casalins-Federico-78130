@@ -5,6 +5,7 @@ from propiedades.views import (
     PropiedadCreateView,
     PropiedadUpdateView,
     PropiedadDeleteView,
+    agregar_imagenes
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path("crear/", PropiedadCreateView.as_view(), name="propiedad_create"),
     path("<int:pk>/editar/", PropiedadUpdateView.as_view(), name="propiedad_update"),
     path("<int:pk>/eliminar/", PropiedadDeleteView.as_view(), name="propiedad_delete"),
+    path("<int:pk>/imagenes/agregar/", agregar_imagenes, name="propiedad_add_images"),
 ]

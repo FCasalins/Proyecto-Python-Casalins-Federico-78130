@@ -23,7 +23,7 @@ class Propiedad(models.Model):
         ('vendida', 'Vendida / Alquilada'),
     ]
 
-    codigo = models.IntegerField(unique=True)
+    codigo = models.IntegerField(unique=True, blank=True, null=True)
     operacion = models.CharField(max_length=30, choices=OPERACION_CHOICES)
     tipo = models.CharField(max_length=30, choices=TIPO_CHOICES)
     descripcion = models.TextField()
@@ -45,7 +45,21 @@ class Propiedad(models.Model):
     imagen_principal = models.ImageField(upload_to='propiedades/', blank=True, null=True)
     activo = models.BooleanField(default=True)
     fecha_publicacion = models.DateField(auto_now_add=True)
+
+    agente = models.ForeignKey(
+        'usuarios.Usuario',
+        on_delete=models.SET_NULL,
+        related_name='propiedades',
+        null=True,
+        blank=True,
+    )
     
+    def save(self, *args, **kwargs):
+        if not self.codigo:
+            ultimo = Propiedad.objects.all().order_by("-codigo").first()
+            self.codigo = (ultimo.codigo + 1) if ultimo else 1000
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['-fecha_publicacion']
         verbose_name = 'Propiedad'
@@ -55,16 +69,6 @@ class Propiedad(models.Model):
         return f"{self.tipo.capitalize()} en {self.localidad} - {self.operacion.capitalize()} (${self.precio:,.0f})"
 
 
-Propiedad.add_to_class(
-    'agente',
-    models.ForeignKey(
-        'usuarios.Usuario',
-        on_delete=models.SET_NULL,
-        related_name='propiedades',
-        null=True,
-        blank=True,
-    )
-)
 
 class ImagenPropiedad(models.Model):
     propiedad = models.ForeignKey(Propiedad, on_delete=models.CASCADE, related_name='imagenes')

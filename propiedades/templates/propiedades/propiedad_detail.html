@@ -22,15 +22,26 @@
                 {% if propiedad.cochera %}<li><strong>Cochera:</strong> Sí</li>{% endif %}
                 <li><strong>Dirección:</strong> {{ propiedad.calle }} {% if propiedad.barrio %}({{ propiedad.barrio }}){% endif %}</li>
             </ul>
+            
+            <h5 class="mt-4">Más imágenes</h5>
+            <div class="row g-3">
+                {% for img in propiedad.imagenes.all %}
+                    <div class="col-md-4">
+                        <img src="{{ img.imagen.url }}" class="img-fluid rounded shadow-sm" alt="">
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No hay imágenes adicionales.</p>
+                {% endfor %}
+            </div>
 
             <div class="d-flex justify-content-between mt-4">
                 <a href="{% url 'propiedad_list' %}" class="btn btn-outline-secondary">Volver</a>
 
-                {% if user.is_authenticated and user == propiedad.agente %}
-                <div>
-                    <a href="{% url 'propiedad_update' propiedad.pk %}" class="btn btn-outline-primary me-2">Editar</a>
-                    <a href="{% url 'propiedad_delete' propiedad.pk %}" class="btn btn-outline-danger">Eliminar</a>
-                </div>
+                {% if request.user.is_authenticated and request.user == propiedad.agente %}
+                    <div>
+                        <a href="{% url 'propiedad_update' propiedad.pk %}" class="btn btn-outline-primary me-2">Editar</a>
+                        <a href="{% url 'propiedad_delete' propiedad.pk %}" class="btn btn-outline-danger">Eliminar</a>
+                    </div>
                 {% endif %}
             </div>
         </div>
