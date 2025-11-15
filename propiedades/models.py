@@ -83,17 +83,17 @@ class ImagenPropiedad(models.Model):
         return f"Imagen de {self.propiedad}"
 
 
-class Consulta(models.Model):
-    propiedad = models.ForeignKey(Propiedad, on_delete=models.CASCADE, related_name='consultas')
-    cliente = models.ForeignKey('usuarios.Usuario', on_delete=models.SET_NULL, blank=True, null=True, related_name='consultas')
-    nombre = models.CharField(max_length=100)
-    email = models.EmailField()
-    telefono = models.CharField(max_length=20, blank=True)
-    mensaje = models.TextField()
-    fecha = models.DateTimeField(auto_now_add=True)
+# class Consulta(models.Model):
+#     propiedad = models.ForeignKey(Propiedad, on_delete=models.CASCADE, related_name='consultas')
+#     cliente = models.ForeignKey('usuarios.Usuario', on_delete=models.SET_NULL, blank=True, null=True, related_name='consultas')
+#     nombre = models.CharField(max_length=100)
+#     email = models.EmailField()
+#     telefono = models.CharField(max_length=20, blank=True)
+#     mensaje = models.TextField()
+#     fecha = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        ordering = ['-fecha']
+#     class Meta:
+#         ordering = ['-fecha']
 
-    def __str__(self):
-        return f"Consulta de {self.nombre} por {self.propiedad}"
+#     def __str__(self):
+#         return f"Consulta de {self.nombre} por {self.propiedad}"
